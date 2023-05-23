@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ class ImagePage extends StatefulWidget {
 
 class _ImagePageState extends State<ImagePage> {
   File? imageFile;
+  final picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,30 @@ class _ImagePageState extends State<ImagePage> {
                 if (status.isGranted) {
                   showImagePicker(context);
                 } else {
-                  print('no permission provided');
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Permission Required'),
+                      content: const Text(
+                          'Please grant access to the gallery to pick an image.'),
+                      actions: [
+                        TextButton(
+                          child: const Text('Cancel'),
+                          onPressed: () => Navigator.of(context).pop(),
+                          // onPressed: () {
+                          //   openAppSettings();
+                          // },
+                        ),
+                        TextButton(
+                          child: const Text('Go to settings'),
+                          // onPressed: () => Navigator.of(context).pop(),
+                          onPressed: () {
+                            openAppSettings();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
                 }
               },
               child: const Text('Select Image'),
@@ -76,8 +102,6 @@ class _ImagePageState extends State<ImagePage> {
       ),
     );
   }
-
-  final picker = ImagePicker();
 
   void showImagePicker(BuildContext context) {
     showModalBottomSheet(
